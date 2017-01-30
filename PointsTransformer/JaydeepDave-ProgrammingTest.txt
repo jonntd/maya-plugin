@@ -1,0 +1,320 @@
+-== Tesla Programmer Test v1.0 ==-
+
+
+Instructions
+============
+
+- Please attempt to complete the following Questionnaire (you may skip questions).  
+- Attempt to be as verbose as possible.  We want to see critical thinking not short answers.
+
+- All candidates MUST complete the practical section at the end.  
+- Each question should take about 5 minutes, on average, to answer.
+
+Software
+--------
+
+Maya 2017(Free Trial) : http://www.autodesk.com/products/maya/free-trial-dts?s_tnt=69293:1:0
+Visual Studio (Free Trial) : https://www.visualstudio.com/post-download-vs/?sku=pro&clcid=0x409&telem=ga
+
+
+
+Candidate Questionnaire
+=======================
+
+Programming
+-----------
+
+1) Describe some key differences between C++ 11 and C99.
+
+Some of the main new features of C++11 which were not available in C99 are:
+
+a) auto keyword which allows generic programming and the type of a variable is decided
+at runtime hence when a return type of an interface changes the ripple effects to the
+rest of the code is minimized.
+
+b) nullptr is a proper type which helps prevent implicit casting between integer when using
+NULL 0 macros
+
+c) enum class allows proper encapsulation of enums
+
+d) Initizer lists are allowd in C++11
+
+e) lambda experessions allow anonymous functions
+
+f) C++ 11 allows one constructor to call another constructor. Hence, no need for 
+old style Init methods to initialize common parts of an object.
+
+2) What is the purpose of the const keyword in C++?
+
+const keyword is is used to indicate that the object pointed to by the const handle
+cannot be mutated. This allows many benefits. Some of them are:
+
+Allows creation of clean interface between software components where the client
+code is well aware of whether or not a method/object is an accessor or a mutator.
+
+This allows passing objects by reference and is gauranteed to not be mutated. i.e.
+externally observable behavior of the object stays constant.
+
+3) What does it mean to be "const correct"?
+
+const correctness is to make sure that the interfaces of the class are declared
+to be const upfront and as early as possible to avoid ripple effects to the other
+parts of the system at a later time. const conrrectness whould be decided and 
+enforced at design time.
+
+4) Describe the difference between:
+
+    void func()
+    {
+        Foo x;
+        // ...
+    }
+
+    -- and --
+
+    void func()
+    {
+        Foo x();
+        // ...
+    }
+
+The first func creates an object x of type Foo on the stack. The second declares a function x() that returns an object Foo by value.
+
+5a) A compile of the following code will initially result in a compile error.  Once fixed, a futher compile will result in a link error.  Why?:
+
+    MyObject.h:
+
+        class MyObject
+        {
+            public:
+                MyObject();
+                // ...
+            private:
+                int         m_sizeOfArea;
+                static int  m_globalSize;
+        }
+
+    MyObject.cpp:
+
+        MyObject::MyObject()
+            : m_sizeOfArea(25)
+            m_globalSize(50)
+        {
+            // ...
+        }
+
+It would give compile error because a static variable cannot be initialized in the constructor's initialization list and there is a coma missing after m_sizeOfArea(25).
+Once m_globalSize(5) is removed from the initialization list, it would give a link error because it does need to be defined.
+
+5b) How can we fix this?
+
+MyObject.h:
+
+        class MyObject
+        {
+            public:
+                MyObject();
+                // ...
+            private:
+                int         m_sizeOfArea;
+                static int  m_globalSize;
+        }
+
+    MyObject.cpp:
+
+	static int MyObject::m_globalSize = 50;
+
+        MyObject::MyObject()
+            : m_sizeOfArea(25)            
+        {
+            // ...
+        }
+
+
+3D Mathematics
+--------------
+
+6) Assume that A and B are vectors of elements x, y and z.  Each is a location along a plane.  The world is either 2D or 3D.  
+We can solve both for distance and direction, between the two points, using a simple mathematical operation.  What is it?  
+How is the distance represented? Is order of operations important between the two vectors?
+
+The distance between A and B is given by |B - A|.
+Subtract vector A from B and get the scale value of the vector which is squrt(square(x) + square(y) + square(z))
+
+The direction of between the two points is given by either B - A or A - B.
+
+The order is important for direction but not for the distance.
+
+7) Describe the result of a dot product operation when used on two normalized vectors that are on a 2D plane.
+Assume that Y points up and X runs horzontally, perpendicular to Y, please describe what the resulting scalar would repesent.
+
+The dot product of two orthogonal (perpendicular) vectors is 0. 
+
+8)  How are these 4x4 matrices different?  What is the common name for the layout of each:
+
+ a) 
+    [ a11, a12, a13, a14 ]
+    [ a21, a22, a23, a24 ]
+    [ a31, a32, a33, a34 ]
+    [ a42, a13, a43, a44 ]
+
+ b) 
+    [ a11, a21, a31, a41 ]
+    [ a12, a22, a32, a42 ]
+    [ a13, a23, a33, a43 ]
+    [ a14, a24, a34, a44 ]
+
+Both the matrices represent the same affine matrix. One is a row major system other in a column major system.
+
+9) Assume that a matrix that represents a non-othonormal 3D space.  By selecting the left and up directions on the space, what operations can 
+you perform to bring this space back to orthonormal condition?  What are some of the potential issues with doing this?
+
+By selecting the left and up directions on the non-orthonormal 3D space and making them orthogonal to the third direction would make the space
+orthonormal. The potential issue with this is that the approach is order dependent and hence the resulting orthonormal space would depend on the
+order in which the basis vectors are made orthonormal to one another.
+
+Algorithms
+----------
+
+10) Describe the A* algorithm and as it pertains to a uniform grid.
+
+An A* algorithem in a uniform grid would expand each possible path at each
+step. 
+
+11) Is this algorithm efficient?  Why or why not?
+
+Since its a uniform grid i.e. height of each row and width of each
+columns are equal it would expand each and every path from source and
+desitnation and hence it wont be efficient.
+
+12) If not, what kind of hueristics could be added to improve efficiency?
+
+Heuristics such as waypoints and weights can be added to the nodes
+of the uniform grid to improve efficiency. As well as different parts of the
+grid can be divided at waypoints and then processed in parallel.
+
+13) Can this algorithm be adapted for use in a node network or graph?
+
+Yes it can be readily adapted for use in node networks and graph.
+
+14) Imagine a 3D space filled with particles.  For ease of use, and performance, these particles are stored in uniform buffers for rendering.
+At any one time, the particle count in the scene is 10 million.  What algorithm or technique can you use to find the nearest particle to 
+the position of a mouse click with the minimum amount of searches?
+
+I am not much familiar with uniform buffers. I believe such a s 3D space searching problem can be solved efficiently by dividing the
+particles in a octree and searching for nearest particle by traversing through the octree.
+
+Graphics
+--------
+
+15) Describe the difference between a CPU and GPU.
+CPU i.e. central procesing unit is the main processor of the computer which traditionally
+GPU i.e. graphical processing units was used for processing graphical data. GPUs were
+customized to work very efficiently and process in parallel graphics related data structurs such as
+points and triangles. Lately GPUs are used more and more for performing traditionall computational
+tasks in parallel.
+
+16) Excluding white and black, how many shades of gray exist in 32-bit RGB space?
+
+Considering that last 8 bits of 32-bit RGB are used for transparency, and values for
+R and G are 0 for shades of grey it represents 16.7 million / 3 = 5.5 million shades
+of grey.
+
+17) What is meant by ALU?  How is it relevent to GPUs?
+
+ALU stands for Arithmetic logic unit and is the main processing units of GPUs that
+perform many arigthmetic operations in parallel.
+
+18) Describe what this shader does:
+
+    ps_2_0
+    dcl t0
+    dcl t1
+    mov r0, t0, c0
+    texkill r0
+    mov oC0, t1, c0
+
+I dont remember GLSL at the top of my head.
+
+19) Describe the process of projecting a 2D clip space point into a 3D world with a arbitrary distance from the near clip.
+
+It can be done by collapsing the the coordinates of the the point corresponding to the near clip plane.
+
+Tools
+-----
+
+20) Describe your favorite and least favorite source control software.  Can you compare and contrast them?
+
+Favorite: Git. Allows large teams to work in collaboration without locking files or creating multiple copies of file versions.
+Many advanced features such as rebasing, shelving etc...
+
+Least Favorite: Visual Source Safe. Locks files exclusively (last time I used it) preventing multiple people from working on same file.
+
+Practical Section
+=================
+
+- Please develop a plugin for the Digital Design team.
+- They are looking for a plugin that will help them manipulate and visualize geometry in novel ways within Maya.
+
+
+Initial Notes
+-------------
+
+- Develop a small plugin for Maya 2016/2017 using OpenMaya SDK provided by Autodesk.
+- C++ MUST be used for majority of plugin.
+- MEL/Python bindings to OpenMaya allowed in relevant places
+- Binary resources, like icons, images and cursors are allowed.
+- Use of Visual Studio is desired, however, alternate build system is allowed.  (Your project must be easy to build on our end).
+- Follow industry best practices for project organization and code style.
+- Provide documentation, where possible, to allow for easy installation and operation.
+- You do NOT need to complete all requirements, however the more the better.
+- Requirements are listed below.  
+- Requirements are sorted from most important to least for the purposes of this practical section.
+
+Requirements
+------------
+
+- Plugin's functionality can to be activated from the shelf or by other means.  
+- Plugin implements a new edit context (for example a selection context).
+- When a user clicks on a model, in a particular location, neighboring vertices are selected automatically and higlighted.
+- Using a key/mouse combination, the user is able to interpolate the position of the selected vertices.
+- The vertices will need to move close or futher away from the postion initially clicked during this operation.
+- The sensitivity of the operation should be tweakable for accuracy if required.
+
+-- Extra Credit --
+- Implement a custom renderer for this operation, including custom coloring for the model and selected vertices.
+- Demonstrate a custom orthographic view.
+- Override projection within the 3D viewport, allowing for the user to scale the 2D clip space arbitrarily.
+- Override all input inside of Maya by hooking into the toolkit that Maya uses for all of its UI (demonstrate this somehow).
+- Override tumble functionality within Maya allowing you to reverse tumble direction or amplify rotation
+- Implement custom 2D menu within the 3D viewport, where items can be hovered over and clicked
+- Allow tumble to be around a specific selected vertex, even if the vertex is not the focus
+
+Delivery
+--------
+
+- Binary plugin
+- Any documentation (text file is fine)
+- All source code required to rebuild plugin from scratch
+- Any pertinent notes on the development of the plugin (including thought process and any comments)
+
+
+Plugin Notes:
+* Please use Visual Studio 2013 for compiling the plugin
+* The plugin has been tested to work with Maya 2017.
+* The VS project requirs following system variables set:
+MAYA_INSTALLATION_PATH=C:\Program Files\Autodesk\Maya2017
+MAYA_PLUG_IN_PATH=C:\MayaPlugin\PointsTransformer\PointsTransformer\x64\Debug (Enables Maya to autoload the plugin)
+* There is only 1 configuration (x64) for the plugin.
+* Load the plugin using the normal plugin loading mechanism of Maya by locating the .mll file.
+* The tool can be activated by following two MEL commands:
+1) PointsTransformerCtx;
+2) setToolTo PointsTransformerCtx1;
+* I was not able to make the component selection work in maya hence the plugin functions as follows:
+a. After the tool is active, click on an object would select the object
+b. Dragging with the Left mouse key + shift key pressed would move the surrounding vertices of the
+object and change its shape. Note: the object slected must be a CV controlled object such as a 
+Curve, Surface or a Mesh.
+* Clicking on another object would clear the previous slection.
+
+
